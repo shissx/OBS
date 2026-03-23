@@ -65,20 +65,21 @@ def send_timed_notification():
     folder = get_screenshot_folder()
     
     try:
-        # 1. 查找最新截图
-        files = [(os.path.getmtime(f), f) for f in glob.glob(os.path.join(folder, "Screenshot*.png"))]
-        if not files:
+        # 查找所有截图文件
+        all_files = glob.glob(os.path.join(folder, "Screenshot*.png"))
+        if not all_files:
             log_info("未找到截图文件")
             return False
         
-        latest_file = max(files)[1]
+        # 获取最新截图用于发送
+        latest_file = max([(os.path.getmtime(f), f) for f in all_files])[1]
         filename = os.path.basename(latest_file)
         log_info(f"找到最新截图: {filename}")
         
         with open(latest_file, "rb") as f:
             img = f.read()
         
-        # 2. 先发图片
+        # 发图片
         img_payload = {
             "msgtype": "image",
             "image": {
@@ -94,14 +95,20 @@ def send_timed_notification():
             timeout=10
         )
         
+        # 删除所有截图
+        for f in all_files:
+            try:
+                os.remove(f)
+            except:
+                pass
+        
         if img_response.status_code != 200:
             log_info(f"图片发送失败: {img_response.status_code}")
             return False
         
-        # 3. 等待设定的时间
+        # 等待并发送文字
         time.sleep(TEXT_IMG_DELAY)
         
-        # 4. 再发文字说明
         caption = f"⏱️定时监控 {datetime.now().strftime('%H:%M')}"
         text_payload = {
             "msgtype": "text",
@@ -116,7 +123,7 @@ def send_timed_notification():
         )
         
         if text_response.status_code == 200:
-            log_info("定时监控发送成功（先图后文）")
+            log_info("定时监控发送成功")
             return True
         else:
             log_info(f"文字发送失败: {text_response.status_code}")
@@ -127,11 +134,20 @@ def send_timed_notification():
         return False
 
 def run():
+    time.sleep(3)  # 延迟3秒
     now = datetime.now()
     time_str = now.strftime("%H:%M:%S")
     
     log_info(f"[{time_str}] ===== 定时截图宏被触发 =====")
     send_timed_notification()
+
+    # 删除所有截图
+    folder = get_screenshot_folder()
+    for f in glob.glob(os.path.join(folder, "Screenshot*.png")):
+        try:
+            os.remove(f)
+        except:
+            pass
     
     return True
 

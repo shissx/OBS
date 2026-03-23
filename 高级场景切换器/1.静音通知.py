@@ -202,6 +202,7 @@ def write_state(state):
         return False
 
 def run():
+    time.sleep(3)  # 延迟3秒
     now = datetime.now()
     current_time = time.time()
     time_str = now.strftime("%H:%M:%S")
@@ -246,6 +247,14 @@ def run():
         "last_notify": last_notify,
         "notified": notified
     })
+
+    # 删除所有截图
+    folder = get_screenshot_folder()
+    for f in glob.glob(os.path.join(folder, "Screenshot*.png")):
+        try:
+            os.remove(f)
+        except:
+            pass
     
     return True
 
