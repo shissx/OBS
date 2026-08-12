@@ -1,0 +1,75 @@
+# 数据文件
+data/
+
+# 敏感文件
+*token*
+*config*
+
+# 配置文件
+# .gitignore
+
+# 备份文件
+*bak*
+
+# 快捷方式
+*.lnk
+
+
+
+# 其他设置
+# 数据库文件
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+/data/*.db
+
+# 索引文件
+/data/index/
+*.index.json
+/data/index/*.json
+
+# 备份文件
+*_backup_*.db
+video_backup_*.db
+backup_*
+
+# 临时文件
+*.tmp
+*.log
+*.cache
+temp/
+tmp/
+*.swp
+*.swo
+*~
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 环境配置
+.env
+.env.*
+*.local
+*.local.py
+config.local.py
+.access_codes
+
+# IDE 配置
+.vscode/
+.idea/
+*.iml
+.project
+.pydevproject
+.settings/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
